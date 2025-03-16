@@ -1,0 +1,71 @@
+.login-page {
+    background: url("C:\Users\Lenova\Desktop\Database\frontend\public\about-us-banner-img.jpg") no-repeat center center;
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-container {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    width: 350px;
+    text-align: center;
+}
+
+h2 {
+    color: blue; /* Ensures college name is blue */
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+h3 {
+    color: orange; /* Ensures "Info-Bot Login" is orange */
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+.input-container {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.input-container input {
+    width: 100%;
+    padding: 12px 12px 12px 40px; /* Adds space for icon */
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+}
+
+.input-container i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    color: gray;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background: orange;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover {
+    background: darkorange;
+}

@@ -1,0 +1,143 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #ffffff, #dfe6ee);
+    color: black;
+}
+
+
+  
+  .hod-dashboard {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  
+  .dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background: linear-gradient(90deg, #001f3f, #003366);
+    color: gold;
+    font-size: 22px;
+  }
+  
+  .user-profile {
+    display: flex;
+    align-items: center;
+  }
+  
+  .profile-pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-left: 10px;
+  }
+  
+  .dashboard-container {
+    display: flex;
+    height: 100%;
+  }
+  
+  .sidebar {
+    width: 250px;
+    background: #f0f4f8; /* Light grayish-blue */
+    padding: 20px;
+    color: black; /* Ensure text is readable */
+}
+
+  
+  .sidebar ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .sidebar li {
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  .chatbot-button {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background: gold;
+    color: black;
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+  
+  .chat-sidebar {
+    position: fixed;
+    bottom: 0;
+    left: -320px;
+    width: 300px;
+    height: 400px;
+    background: #001f3f;
+    transition: 0.3s ease;
+    border-radius: 10px 10px 0 0;
+  }
+  
+  .chat-sidebar.open {
+    left: 0;
+  }
+  
+  .chat-header {
+    background: gold;
+    color: black;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .chat-messages {
+    height: 300px;
+    overflow-y: auto;
+    padding: 10px;
+  }
+  
+  .chat-bubble {
+    padding: 10px;
+    margin: 5px;
+    border-radius: 10px;
+  }
+  
+  .chat-bubble.user {
+    background: gold;
+    color: black;
+    align-self: flex-end;
+  }
+  
+  .chat-bubble.bot {
+    background: white;
+    color: black;
+  }
+  
+  .chat-input {
+    display: flex;
+    padding: 10px;
+  }
+  
+  .chat-input input {
+    flex: 1;
+    padding: 8px;
+    border: none;
+  }
+  
+  .chat-input button {
+    background: gold;
+    border: none;
+    padding: 10px;
+  }
+  

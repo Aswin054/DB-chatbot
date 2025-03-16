@@ -1,0 +1,514 @@
+/* StudentDashboard.css */
+
+/* Body Gradient Background */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: linear-gradient(135deg, #1e3c72, #2a5298); /* Gradient background */
+  color: #333;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Dashboard Container - Full Screen with Dark Gradient */
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Full screen height */
+  width: 100vw; /* Full screen width */
+  /* StudentDashboard.css */
+
+/* Body Gradient Background */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: linear-gradient(135deg, #1e3c72, #2a5298); /* Gradient background */
+  color: #333;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* StudentDashboard.css */
+
+/* Body Gradient Background */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: linear-gradient(135deg, #1e3c72, #2a5298); /* Gradient background */
+  color: #333;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Dashboard Container - Full Screen with Dark Gradient */
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Full screen height */
+  width: 100vw; /* Full screen width */
+  background: linear-gradient(135deg, #1e1e2f, #2a2a40); /* Dark gradient background */
+  overflow: hidden;
+}
+
+/* Dark Mode */
+.dark-mode {
+  background: rgba(0, 0, 0, 0.9);
+  color: #fff;
+}
+
+.dark-mode .chat-header {
+  background: #1a1a1a;
+  color: #fff;
+}
+
+.dark-mode .chat-messages {
+  background: #121212;
+}
+
+.dark-mode .chat-bubble.bot {
+  background: #333;
+  color: #fff;
+}
+
+.dark-mode .chat-bubble.user {
+  background: #007bff;
+  color: #fff;
+}
+
+.dark-mode .chat-input input {
+  background: #1a1a1a;
+  color: #fff;
+  border: 1px solid #333;
+}
+
+.dark-mode .chat-input button {
+  background: #007bff;
+  color: #fff;
+}
+
+/* Chat Header */
+.chat-header {
+  display: flex;
+  justify-content: space-between; /* Space out items */
+  align-items: center; /* Vertically center items */
+  padding: 15px;
+  background: #007bff;
+  color: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  position: relative; /* Needed for absolute positioning of the heading */
+}
+
+.chat-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  position: absolute; /* Position the heading absolutely */
+  left: 50%; /* Move to the center */
+  transform: translateX(-50%); /* Adjust for exact centering */
+}
+
+.chat-actions {
+  display: flex;
+  gap: 10px;
+  margin-left: auto; /* Push buttons to the right */
+}
+
+.chat-actions button {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  border-radius: 50%;
+  transition: background 0.3s ease;
+}
+
+.chat-actions button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Chat Messages */
+.chat-messages {
+  flex: 1;
+  padding: 15px;
+  padding-bottom: 80px; /* Add padding to avoid overlap with the fixed input box */
+  overflow-y: auto;
+  background: #f9f9f9;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.chat-bubble {
+  max-width: 70%;
+  padding: 10px 15px;
+  border-radius: 15px;
+  word-wrap: break-word;
+}
+
+.chat-bubble.bot {
+  background: #e1e1e1;
+  color: #333;
+  align-self: flex-start;
+}
+
+.chat-bubble.user {
+  background: #007bff;
+  color: #fff;
+  align-self: flex-end;
+}
+
+/* Chat Input - Fixed at Bottom */
+.chat-input {
+  display: flex;
+  padding: 10px;
+  background: #fff;
+  border-top: 1px solid #ddd;
+  position: fixed; /* Fixed at the bottom of the screen */
+  bottom: 0; /* Stick to the bottom */
+  left: 0; /* Align to the left edge */
+  right: 0; /* Align to the right edge */
+  width: 100%; /* Full width */
+  box-sizing: border-box; /* Include padding in width */
+  z-index: 10; /* Ensure it stays above other content */
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  outline: none;
+  font-size: 1rem;
+  margin-right: 10px;
+}
+
+.chat-input button {
+  background: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.chat-input button:hover {
+  background: #0056b3;
+}
+/* Dark Mode */
+.dark-mode {
+  background: rgba(0, 0, 0, 0.9);
+  color: #fff;
+}
+
+.dark-mode .chat-header {
+  background: #1a1a1a;
+  color: #fff;
+}
+
+.dark-mode .chat-messages {
+  background: #121212;
+}
+
+.dark-mode .chat-bubble.bot {
+  background: #333;
+  color: #fff;
+}
+
+.dark-mode .chat-bubble.user {
+  background: #007bff;
+  color: #fff;
+}
+
+.dark-mode .chat-input input {
+  background: #1a1a1a;
+  color: #fff;
+  border: 1px solid #333;
+}
+
+.dark-mode .chat-input button {
+  background: #007bff;
+  color: #fff;
+}
+
+/* Chat Header */
+.chat-header {
+  display: flex;
+  justify-content: space-between; /* Space out items */
+  align-items: center; /* Vertically center items */
+  padding: 15px;
+  background: #007bff;
+  color: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  position: relative; /* Needed for absolute positioning of the heading */
+}
+
+.chat-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  position: absolute; /* Position the heading absolutely */
+  left: 50%; /* Move to the center */
+  transform: translateX(-50%); /* Adjust for exact centering */
+}
+
+.chat-actions {
+  display: flex;
+  gap: 10px;
+  margin-left: auto; /* Push buttons to the right */
+}
+
+.chat-actions button {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  border-radius: 50%;
+  transition: background 0.3s ease;
+}
+
+.chat-actions button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Chat Messages */
+.chat-messages {
+  flex: 1;
+  padding: 15px;
+  padding-bottom: 80px; /* Add padding to avoid overlap with the fixed input box */
+  overflow-y: auto;
+  background: #f9f9f9;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.chat-bubble {
+  max-width: 70%;
+  padding: 10px 15px;
+  border-radius: 15px;
+  word-wrap: break-word;
+}
+
+.chat-bubble.bot {
+  background: #e1e1e1;
+  color: #333;
+  align-self: flex-start;
+}
+
+.chat-bubble.user {
+  background: #007bff;
+  color: #fff;
+  align-self: flex-end;
+}
+
+/* Chat Input - Fixed at Bottom */
+.chat-input {
+  display: flex;
+  padding: 10px;
+  background: #fff;
+  border-top: 1px solid #ddd;
+  position: fixed; /* Fixed at the bottom of the screen */
+  bottom: 0; /* Stick to the bottom */
+  left: 0; /* Align to the left edge */
+  right: 0; /* Align to the right edge */
+  width: 100%; /* Full width */
+  box-sizing: border-box; /* Include padding in width */
+  z-index: 10; /* Ensure it stays above other content */
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  outline: none;
+  font-size: 1rem;
+  margin-right: 10px;
+}
+
+.chat-input button {
+  background: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.chat-input button:hover {
+  background: #0056b3;
+}
+  overflow: hidden;
+}
+
+/* Dark Mode */
+.dark-mode {
+  background: rgba(0, 0, 0, 0.9);
+  color: #fff;
+}
+
+.dark-mode .chat-header {
+  background: #1a1a1a;
+  color: #fff;
+}
+
+.dark-mode .chat-messages {
+  background: #121212;
+}
+
+.dark-mode .chat-bubble.bot {
+  background: #333;
+  color: #fff;
+}
+
+.dark-mode .chat-bubble.user {
+  background: #007bff;
+  color: #fff;
+}
+
+.dark-mode .chat-input input {
+  background: #1a1a1a;
+  color: #fff;
+  border: 1px solid #333;
+}
+
+.dark-mode .chat-input button {
+  background: #007bff;
+  color: #fff;
+}
+
+/* Chat Header */
+.chat-header {
+  display: flex;
+  justify-content: space-between; /* Space out items */
+  align-items: center; /* Vertically center items */
+  padding: 15px;
+  background: #007bff;
+  color: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  position: relative; /* Needed for absolute positioning of the heading */
+}
+
+.chat-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  position: absolute; /* Position the heading absolutely */
+  left: 50%; /* Move to the center */
+  transform: translateX(-50%); /* Adjust for exact centering */
+}
+
+.chat-actions {
+  display: flex;
+  gap: 10px;
+  margin-left: auto; /* Push buttons to the right */
+}
+
+.chat-actions button {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  border-radius: 50%;
+  transition: background 0.3s ease;
+}
+
+.chat-actions button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Chat Messages */
+.chat-messages {
+  flex: 1;
+  padding: 15px;
+  padding-bottom: 80px; /* Add padding to avoid overlap with the fixed input box */
+  overflow-y: auto;
+  background: #f9f9f9;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.chat-bubble {
+  max-width: 70%;
+  padding: 10px 15px;
+  border-radius: 15px;
+  word-wrap: break-word;
+}
+
+.chat-bubble.bot {
+  background: #e1e1e1;
+  color: #333;
+  align-self: flex-start;
+}
+
+.chat-bubble.user {
+  background: #007bff;
+  color: #fff;
+  align-self: flex-end;
+}
+
+/* Chat Input - Fixed at Bottom */
+.chat-input {
+  display: flex;
+  padding: 10px;
+  background: #fff;
+  border-top: 1px solid #ddd;
+  position: fixed; /* Fixed at the bottom of the screen */
+  bottom: 0; /* Stick to the bottom */
+  left: 0; /* Align to the left edge */
+  right: 0; /* Align to the right edge */
+  width: 100%; /* Full width */
+  box-sizing: border-box; /* Include padding in width */
+  z-index: 10; /* Ensure it stays above other content */
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  outline: none;
+  font-size: 1rem;
+  margin-right: 10px;
+}
+
+.chat-input button {
+  background: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.chat-input button:hover {
+  background: #0056b3;
+}
