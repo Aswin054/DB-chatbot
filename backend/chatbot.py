@@ -2,23 +2,76 @@ import spacy
 import re
 from db import students_col, mentors_col, teachers_col, hod_col  # Import MongoDB collections
 
-# Load NLP model
+# ✅ Predefined Response Templates for Better Conversation
+response_templates = {
+    "Student": (
+        "Great! I found the details for {Student Name} 😊\n"
+        "They are currently in {Year} and belong to class {Class}.\n"
+        "They have achieved: {Achievements} 🎯\n"
+        "Their mentor is {Mentee} and the class teacher is {Class Teacher}. \n"
+        "Would you like to know about their GPA or attendance next? 🤔"
+    ),
+    "Mentor": (
+        "Here's what I know about {Name} 👩‍🏫\n"
+        "They are mentoring {No_of_Mentees} students. Would you like to ask anything else?"
+    ),
+    "Teacher": (
+        "{name} is a class teacher for the {department} department 🧑‍🏫.\n"
+        "They teach {subject} and have {experience} years of experience.\n"
+        "You can contact them at {email}. Anything else you'd like to ask?"
+    ),
+    "HOD": (
+        "The HOD is {Name} 🎓. They specialize in {Specialization} from {University}."
+    ),
+    "GPA": (
+        "📚 {sem_key} GPA for {Student Name} is {gpa}. Would you like to know about another semester? 😉"
+    ),
+    "Attendance": (
+        "📊 Attendance for {Student Name} is {Attendance}. Do you want to check GPA or achievements? 🎯"
+    ),
+}
+
+# ✅ Load NLP model
 nlp = spacy.load("en_core_web_sm")
+
+# ✅ Conversation Memory to Store Context
+conversation_memory = {}
+
 
 def find_entity_by_name(name, collection, key):
     """Find an entity in MongoDB collection by name (case-insensitive)."""
-    result = collection.find_one({key: {"$regex": f"^{name}$", "$options": "i"}}, {"_id": 0})
-    return result
+    try:
+        result = collection.find_one({key: {"$regex": f"^{name}$", "$options": "i"}}, {"_id": 0})
+        return result
+    except Exception as e:
+        print(f"⚠️ Error querying database: {e}")
+        return None
 
-def format_response(entity_type, data):
-    """Format response for better readability."""
+
+def format_response(entity_type, data, extra_info=None):
+    """Format response dynamically using templates."""
     if not data:
-        return f"🚨 No such {entity_type} found."
-    
-    response = f"📌 {entity_type} Details:\n"
-    for key, value in data.items():
-        response += f"  - {key}: {value}\n"
-    return response.strip()
+        return f"🚨 No such {entity_type} found. Please check and try again."
+
+    # Check if template is available for the entity
+    if entity_type in response_templates:
+        # Use dynamic placeholders from MongoDB data
+        return response_templates[entity_type].format(**data)
+
+    # Handle extra info like GPA or attendance dynamically
+    if entity_type == "GPA" and extra_info:
+        return response_templates["GPA"].format(
+            sem_key=extra_info["sem_key"],
+            gpa=extra_info["gpa"],
+            **data
+        )
+
+    if entity_type == "Attendance" and "Attendance" in data:
+        return response_templates["Attendance"].format(**data)
+
+    # Default response if no template matches
+    return "🤔 I couldn't process that. Can you clarify your question?"
+
 
 def extract_entity_name(query, entity_type):
     """Extract names for students, mentors, teachers, and HOD using regex."""
@@ -30,34 +83,40 @@ def extract_entity_name(query, entity_type):
             return ent.text.strip()
 
     # Regex-based extraction if NER fails
-    if entity_type == "Student":
-        match = re.search(r"student\s*(\d+)", query, re.IGNORECASE)
-        if match:
-            return f"Student {match.group(1)}"
+    patterns = {
+        "Student": r"student\s*(\d+)",
+        "Mentor": r"mentor\s*(\d+)",
+        "Teacher": r"(?:class\s*teacher|teacher)\s*(\d+|[a-zA-Z]+)",  # ✅ Corrected pattern for Teacher
+        "HOD": r"hod"
+    }
 
-    if entity_type == "Mentor":
-        match = re.search(r"mentor\s*(\d+)", query, re.IGNORECASE)
+    pattern = patterns.get(entity_type)
+    if pattern:
+        match = re.search(pattern, query, re.IGNORECASE)
         if match:
-            return f"Mentor {match.group(1)}"
-
-    if entity_type == "Teacher":
-        match = re.search(r"(class teacher|teacher)\s*(\d+)", query, re.IGNORECASE)
-        if match:
-            return f"Class Teacher {match.group(2)}"
-
-    if entity_type == "HOD":
-        if "hod" in query:
-            return "HOD"
+            if entity_type == "HOD":
+                return "HOD"
+            return f"{entity_type} {match.group(1)}"
 
     return None
+
+
+def extract_student_semester(query):
+    """Extract student ID and semester from the query."""
+    student_match = re.search(r"student\s*(\d+)", query, re.IGNORECASE)
+    semester_match = re.search(r"(?:sem|semester)\s*(\d+)", query, re.IGNORECASE)
+
+    student_id = student_match.group(1) if student_match else None
+    semester_number = semester_match.group(1) if semester_match else None
+
+    return student_id, semester_number
+
 
 def get_semester_gpa(student_data, sem_number):
     """Fetch GPA for a specific semester."""
     sem_key = f"{sem_number} Semester"
-    if sem_key in student_data:
-        return f"{sem_key} GPA: {student_data[sem_key]}"
-    else:
-        return f"🚨 No GPA data found for {sem_key}."
+    return f"🎯 {sem_key} GPA: {student_data.get(sem_key, 'No GPA data found')}."
+
 
 def get_all_gpa(student_data):
     """Fetch all semester GPAs."""
@@ -67,61 +126,97 @@ def get_all_gpa(student_data):
         return gpa_details
     return "🚨 No GPA information found."
 
-def process_query(query):
+
+def process_query(query, session_id):
     """Process user query and fetch details from MongoDB."""
-    query = query.lower()
+    query = query.lower().strip()
+
+    # ✅ Use conversation memory to maintain context
+    memory = conversation_memory.get(session_id, {})
+    last_entity = memory.get("entity_type")
+    last_data = memory.get("data")
 
     # **Extract names for each entity type**
-    student_name = extract_entity_name(query, "Student")
-    mentor_name = extract_entity_name(query, "Mentor")
-    teacher_name = extract_entity_name(query, "Teacher")
-    hod_name = extract_entity_name(query, "HOD")
+    entity_types = ["Student", "Mentor", "Teacher", "HOD"]
+    entity_name = None
+    entity_type = None
 
-    print(f"🧐 Extracted Name - Student: {student_name}, Mentor: {mentor_name}, Teacher: {teacher_name}, HOD: {hod_name}")
+    for et in entity_types:
+        entity_name = extract_entity_name(query, et)
+        if entity_name:
+            entity_type = et
+            break
 
-    # **Student Queries**
-    if "student" in query and student_name:
-        student_data = find_entity_by_name(student_name, students_col, "Student Name")
-        if not student_data:
-            return f"🚨 No data found for {student_name}."
+    print(f"🧐 Extracted Name - {entity_type}: {entity_name}")
 
-        # **Handle Specific Semester GPA Query**
-        sem_match = re.search(r"sem\s*(\d+)", query, re.IGNORECASE)
-        if "gpa" in query and sem_match:
-            sem_number = sem_match.group(1)
-            return get_semester_gpa(student_data, sem_number)
+    # ✅ Auto-prefix 'Class Teacher' for numeric teacher queries
+    if entity_type == "Teacher" and entity_name and entity_name.replace("Teacher ", "").isdigit():
+        entity_name = f"Class Teacher {entity_name.replace('Teacher ', '')}"
 
-        # **Handle Query for All Semester GPAs**
-        elif "gpa" in query:
-            return get_all_gpa(student_data)
+    # ✅ Query MongoDB if entity name is found
+    if entity_name and entity_type:
+        collection_map = {
+            "Student": (students_col, "Student Name"),
+            "Mentor": (mentors_col, "Name"),
+            "Teacher": (teachers_col, "name"),  # ✅ Corrected here
+            "HOD": (hod_col, "Name"),
+        }
+        collection, key = collection_map[entity_type]
+        entity_data = find_entity_by_name(entity_name, collection, key)
 
-        # **Handle Attendance Query**
-        elif "attendance" in query:
-            if "Attendance" in student_data:
-                return f"📊 Attendance: {student_data['Attendance']}"
+        # ✅ Check if data is found and valid response template exists
+        if entity_data:
+            if entity_type and entity_type in response_templates:
+                conversation_memory[session_id] = {"entity_type": entity_type, "data": entity_data}
+                return format_response(entity_type, entity_data)
             else:
-                return "🚨 No attendance data available."
+                return f"❗ Entity type '{entity_type}' not recognized or missing response format."
 
-        # **Return Full Student Details if No Specific Query**
-        else:
-            return format_response("Student", student_data)
+        # 🚨 Return if no data is found
+        return f"🚨 No data found for '{entity_name}'."
 
-    # **Mentor Queries**
-    if "mentor" in query and mentor_name:
-        mentor_data = find_entity_by_name(mentor_name, mentors_col, "Name")
-        return format_response("Mentor", mentor_data)
+    # ✅ Queries about specific semesters
+    student_id, sem_number = extract_student_semester(query)
+    if student_id and sem_number:
+        student_data = find_entity_by_name(f"Student {student_id}", students_col, "Student Name")
+        if student_data:
+            return get_semester_gpa(student_data, sem_number)
+        return f"🚨 No data found for Student {student_id}."
 
-    # **Class Teacher Queries**
-    if ("teacher" in query or "class teacher" in query) and teacher_name:
-        teacher_data = find_entity_by_name(teacher_name, teachers_col, "name")
-        return format_response("Teacher", teacher_data)
+    # ✅ Follow-up Queries (Context-based Queries)
+    if last_entity == "Student" and last_data:
+        # GPA or Result Queries
+        if any(keyword in query for keyword in ["gpa", "result", "marks"]):
+            sem_match = re.search(r"(?:sem|semester)\s*(\d+)", query, re.IGNORECASE)
+            if sem_match:
+                sem_number = sem_match.group(1)
+                return get_semester_gpa(last_data, sem_number)
+            return get_all_gpa(last_data)
 
-    # **HOD Queries**
-    if "hod" in query and hod_name:
-        hod_data = find_entity_by_name("HOD", hod_col, "Name")
-        return format_response("HOD", hod_data)
+        # Attendance Queries
+        if any(keyword in query for keyword in ["attendance", "present"]):
+            return f"📊 Attendance: {last_data.get('Attendance', 'No attendance data available.')}"
 
-    return "❓ I'm sorry, I don't understand your query."
+        # Achievement Queries
+        if any(keyword in query for keyword in ["achievements", "awards"]):
+            return f"🏆 Achievements: {last_data.get('Achievements', 'No achievements found')}"
+
+        # Mentor Queries
+        if any(keyword in query for keyword in ["mentor", "guide"]):
+            return f"👨‍🏫 Mentor: {last_data.get('Mentee', 'No mentor assigned')}"
+
+        # Class Teacher Queries
+        if any(keyword in query for keyword in ["class teacher", "teacher"]):
+            return f"🏫 Class Teacher: {last_data.get('Class Teacher', 'No class teacher assigned')}"
+
+    # ✅ Handle ambiguous or unclear queries
+    if last_entity:
+        if any(keyword in query for keyword in ["details", "information", "data"]):
+            return format_response(last_entity, last_data)
+
+    # 🛑 Default fallback for unrecognized queries
+    return "❓ I'm sorry, I don't understand your query. Can you be more specific?"
+
 
 if __name__ == "__main__":
     print("💬 Chatbot is running! Type 'exit' to quit.")
@@ -130,5 +225,5 @@ if __name__ == "__main__":
         if user_input.lower() == "exit":
             print("👋 Goodbye!")
             break
-        response = process_query(user_input)
+        response = process_query(user_input, "test_session")
         print(response)

@@ -1,115 +1,53 @@
 /* StudentDashboard.css */
 
-/* Body Gradient Background */
+/* Body - Full Black Background */
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  background: linear-gradient(135deg, #1e3c72, #2a5298); /* Gradient background */
-  color: #333;
+  background: #000; /* Full Black */
+  color: #fff; /* White Text */
   height: 100vh;
   overflow: hidden;
 }
 
-/* Dashboard Container - Full Screen with Dark Gradient */
+/* Dashboard Container - Full Black Theme */
 .dashboard-container {
   display: flex;
   flex-direction: column;
-  height: 100vh; /* Full screen height */
-  width: 100vw; /* Full screen width */
-  /* StudentDashboard.css */
-
-/* Body Gradient Background */
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  background: linear-gradient(135deg, #1e3c72, #2a5298); /* Gradient background */
-  color: #333;
   height: 100vh;
-  overflow: hidden;
+  width: 100vw;
+  background: #000;
+  overflow: auto;
 }
 
-/* StudentDashboard.css */
-
-/* Body Gradient Background */
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  background: linear-gradient(135deg, #1e3c72, #2a5298); /* Gradient background */
-  color: #333;
-  height: 100vh;
-  overflow: hidden;
-}
-
-/* Dashboard Container - Full Screen with Dark Gradient */
-.dashboard-container {
-  display: flex;
-  flex-direction: column;
-  height: 100vh; /* Full screen height */
-  width: 100vw; /* Full screen width */
-  background: linear-gradient(135deg, #1e1e2f, #2a2a40); /* Dark gradient background */
-  overflow: hidden;
-}
-
-/* Dark Mode */
-.dark-mode {
-  background: rgba(0, 0, 0, 0.9);
-  color: #fff;
-}
-
-.dark-mode .chat-header {
-  background: #1a1a1a;
-  color: #fff;
-}
-
-.dark-mode .chat-messages {
-  background: #121212;
-}
-
-.dark-mode .chat-bubble.bot {
-  background: #333;
-  color: #fff;
-}
-
-.dark-mode .chat-bubble.user {
-  background: #007bff;
-  color: #fff;
-}
-
-.dark-mode .chat-input input {
-  background: #1a1a1a;
-  color: #fff;
-  border: 1px solid #333;
-}
-
-.dark-mode .chat-input button {
-  background: #007bff;
-  color: #fff;
-}
-
-/* Chat Header */
+/* Chat Header - Black Background */
 .chat-header {
   display: flex;
-  justify-content: space-between; /* Space out items */
-  align-items: center; /* Vertically center items */
+  justify-content: space-between;
+  align-items: center;
   padding: 15px;
-  background: #007bff;
-  color: #fff;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  position: relative; /* Needed for absolute positioning of the heading */
+  
+    background: #000 !important; /* Force black background */
+    color: #fff !important; /* Ensure text is white */
+  
+  box-shadow: 0 2px 5px rgba(255, 255, 255, 0.1);
+  position: relative;
 }
+
 
 .chat-header h2 {
   margin: 0;
   font-size: 1.5rem;
-  position: absolute; /* Position the heading absolutely */
-  left: 50%; /* Move to the center */
-  transform: translateX(-50%); /* Adjust for exact centering */
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
+/* Chat Actions */
 .chat-actions {
   display: flex;
   gap: 10px;
-  margin-left: auto; /* Push buttons to the right */
+  margin-left: auto;
 }
 
 .chat-actions button {
@@ -130,18 +68,37 @@ body {
   background: rgba(255, 255, 255, 0.1);
 }
 
-/* Chat Messages */
+/* Chat Messages - Increased Height for Desktop */
 .chat-messages {
   flex: 1;
   padding: 15px;
-  padding-bottom: 80px; /* Add padding to avoid overlap with the fixed input box */
+  padding-bottom: 80px;
   overflow-y: auto;
-  background: #f9f9f9;
+  background: #f9f6f6;
   display: flex;
   flex-direction: column;
   gap: 10px;
+
+  /* Adjusting height for desktop */
+  height: calc(100vh - 150px); /* Increased height */
+  max-height: calc(100vh - 150px); /* Ensures height fits desktop */
 }
 
+/* Smooth Scrolling */
+.chat-messages::-webkit-scrollbar {
+  width: 8px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+  background-color: #333;
+  border-radius: 10px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+  background-color: #111;
+}
+
+/* Chat Bubbles - All Black Theme */
 .chat-bubble {
   max-width: 70%;
   padding: 10px 15px;
@@ -150,198 +107,47 @@ body {
 }
 
 .chat-bubble.bot {
-  background: #e1e1e1;
-  color: #333;
+  background: #222;
+  color: #fff;
   align-self: flex-start;
 }
 
 .chat-bubble.user {
-  background: #007bff;
-  color: #fff;
-  align-self: flex-end;
-}
-
-/* Chat Input - Fixed at Bottom */
-.chat-input {
-  display: flex;
-  padding: 10px;
-  background: #fff;
-  border-top: 1px solid #ddd;
-  position: fixed; /* Fixed at the bottom of the screen */
-  bottom: 0; /* Stick to the bottom */
-  left: 0; /* Align to the left edge */
-  right: 0; /* Align to the right edge */
-  width: 100%; /* Full width */
-  box-sizing: border-box; /* Include padding in width */
-  z-index: 10; /* Ensure it stays above other content */
-}
-
-.chat-input input {
-  flex: 1;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 20px;
-  outline: none;
-  font-size: 1rem;
-  margin-right: 10px;
-}
-
-.chat-input button {
-  background: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-.chat-input button:hover {
-  background: #0056b3;
-}
-/* Dark Mode */
-.dark-mode {
-  background: rgba(0, 0, 0, 0.9);
-  color: #fff;
-}
-
-.dark-mode .chat-header {
-  background: #1a1a1a;
-  color: #fff;
-}
-
-.dark-mode .chat-messages {
-  background: #121212;
-}
-
-.dark-mode .chat-bubble.bot {
   background: #333;
   color: #fff;
-}
-
-.dark-mode .chat-bubble.user {
-  background: #007bff;
-  color: #fff;
-}
-
-.dark-mode .chat-input input {
-  background: #1a1a1a;
-  color: #fff;
-  border: 1px solid #333;
-}
-
-.dark-mode .chat-input button {
-  background: #007bff;
-  color: #fff;
-}
-
-/* Chat Header */
-.chat-header {
-  display: flex;
-  justify-content: space-between; /* Space out items */
-  align-items: center; /* Vertically center items */
-  padding: 15px;
-  background: #007bff;
-  color: #fff;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  position: relative; /* Needed for absolute positioning of the heading */
-}
-
-.chat-header h2 {
-  margin: 0;
-  font-size: 1.5rem;
-  position: absolute; /* Position the heading absolutely */
-  left: 50%; /* Move to the center */
-  transform: translateX(-50%); /* Adjust for exact centering */
-}
-
-.chat-actions {
-  display: flex;
-  gap: 10px;
-  margin-left: auto; /* Push buttons to the right */
-}
-
-.chat-actions button {
-  background: none;
-  border: none;
-  color: inherit;
-  cursor: pointer;
-  font-size: 1.2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 5px;
-  border-radius: 50%;
-  transition: background 0.3s ease;
-}
-
-.chat-actions button:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-/* Chat Messages */
-.chat-messages {
-  flex: 1;
-  padding: 15px;
-  padding-bottom: 80px; /* Add padding to avoid overlap with the fixed input box */
-  overflow-y: auto;
-  background: #f9f9f9;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.chat-bubble {
-  max-width: 70%;
-  padding: 10px 15px;
-  border-radius: 15px;
-  word-wrap: break-word;
-}
-
-.chat-bubble.bot {
-  background: #e1e1e1;
-  color: #333;
-  align-self: flex-start;
-}
-
-.chat-bubble.user {
-  background: #007bff;
-  color: #fff;
   align-self: flex-end;
 }
 
-/* Chat Input - Fixed at Bottom */
+/* Chat Input - Fixed at Bottom with Dark Theme */
 .chat-input {
   display: flex;
   padding: 10px;
-  background: #fff;
-  border-top: 1px solid #ddd;
-  position: fixed; /* Fixed at the bottom of the screen */
-  bottom: 0; /* Stick to the bottom */
-  left: 0; /* Align to the left edge */
-  right: 0; /* Align to the right edge */
-  width: 100%; /* Full width */
-  box-sizing: border-box; /* Include padding in width */
-  z-index: 10; /* Ensure it stays above other content */
+  background: #111;
+  border-top: 1px solid #222;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  box-sizing: border-box;
+  z-index: 10;
 }
 
 .chat-input input {
   flex: 1;
   padding: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid #333;
   border-radius: 20px;
   outline: none;
   font-size: 1rem;
   margin-right: 10px;
+  background: #111 !important; /* Fixed to Dark */
+  color: #fff !important; /* Text to White */
 }
 
 .chat-input button {
-  background: #007bff;
-  color: #fff;
+  background: #333 !important;
+  color: #fff !important;
   border: none;
   border-radius: 50%;
   width: 40px;
@@ -354,161 +160,6 @@ body {
 }
 
 .chat-input button:hover {
-  background: #0056b3;
-}
-  overflow: hidden;
+  background: #555 !important;
 }
 
-/* Dark Mode */
-.dark-mode {
-  background: rgba(0, 0, 0, 0.9);
-  color: #fff;
-}
-
-.dark-mode .chat-header {
-  background: #1a1a1a;
-  color: #fff;
-}
-
-.dark-mode .chat-messages {
-  background: #121212;
-}
-
-.dark-mode .chat-bubble.bot {
-  background: #333;
-  color: #fff;
-}
-
-.dark-mode .chat-bubble.user {
-  background: #007bff;
-  color: #fff;
-}
-
-.dark-mode .chat-input input {
-  background: #1a1a1a;
-  color: #fff;
-  border: 1px solid #333;
-}
-
-.dark-mode .chat-input button {
-  background: #007bff;
-  color: #fff;
-}
-
-/* Chat Header */
-.chat-header {
-  display: flex;
-  justify-content: space-between; /* Space out items */
-  align-items: center; /* Vertically center items */
-  padding: 15px;
-  background: #007bff;
-  color: #fff;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  position: relative; /* Needed for absolute positioning of the heading */
-}
-
-.chat-header h2 {
-  margin: 0;
-  font-size: 1.5rem;
-  position: absolute; /* Position the heading absolutely */
-  left: 50%; /* Move to the center */
-  transform: translateX(-50%); /* Adjust for exact centering */
-}
-
-.chat-actions {
-  display: flex;
-  gap: 10px;
-  margin-left: auto; /* Push buttons to the right */
-}
-
-.chat-actions button {
-  background: none;
-  border: none;
-  color: inherit;
-  cursor: pointer;
-  font-size: 1.2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 5px;
-  border-radius: 50%;
-  transition: background 0.3s ease;
-}
-
-.chat-actions button:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-/* Chat Messages */
-.chat-messages {
-  flex: 1;
-  padding: 15px;
-  padding-bottom: 80px; /* Add padding to avoid overlap with the fixed input box */
-  overflow-y: auto;
-  background: #f9f9f9;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.chat-bubble {
-  max-width: 70%;
-  padding: 10px 15px;
-  border-radius: 15px;
-  word-wrap: break-word;
-}
-
-.chat-bubble.bot {
-  background: #e1e1e1;
-  color: #333;
-  align-self: flex-start;
-}
-
-.chat-bubble.user {
-  background: #007bff;
-  color: #fff;
-  align-self: flex-end;
-}
-
-/* Chat Input - Fixed at Bottom */
-.chat-input {
-  display: flex;
-  padding: 10px;
-  background: #fff;
-  border-top: 1px solid #ddd;
-  position: fixed; /* Fixed at the bottom of the screen */
-  bottom: 0; /* Stick to the bottom */
-  left: 0; /* Align to the left edge */
-  right: 0; /* Align to the right edge */
-  width: 100%; /* Full width */
-  box-sizing: border-box; /* Include padding in width */
-  z-index: 10; /* Ensure it stays above other content */
-}
-
-.chat-input input {
-  flex: 1;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 20px;
-  outline: none;
-  font-size: 1rem;
-  margin-right: 10px;
-}
-
-.chat-input button {
-  background: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-.chat-input button:hover {
-  background: #0056b3;
-}

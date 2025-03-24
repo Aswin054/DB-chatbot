@@ -1,16 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
-import { FiSend, FiX, FiMoon, FiSun } from "react-icons/fi";
+import { FiSend, FiX } from "react-icons/fi";
 import { motion } from "framer-motion";
 import "./StudentDashboard.css";
 
 const StudentDashboard = () => {
-  const [messages, setMessages] = useState([
-    { sender: "bot", text: "Hi" }
-  ]);
+  const [messages, setMessages] = useState([{ sender: "bot", text: "Hi" }]);
   const [input, setInput] = useState("");
-  const [darkMode, setDarkMode] = useState(false);
   const chatRef = useRef(null);
 
+  // Automatically scroll to the bottom when messages change
   useEffect(() => {
     if (chatRef.current) {
       chatRef.current.scrollTop = chatRef.current.scrollHeight;
@@ -24,7 +22,10 @@ const StudentDashboard = () => {
     setMessages([...messages, userMessage]);
     setInput("");
 
-    setMessages((prev) => [...prev, { sender: "bot", text: "Typing...", typing: true }]);
+    setMessages((prev) => [
+      ...prev,
+      { sender: "bot", text: "Typing...", typing: true },
+    ]);
 
     try {
       const response = await fetch("http://127.0.0.1:5000/chat", {
@@ -36,22 +37,25 @@ const StudentDashboard = () => {
 
       setTimeout(() => {
         setMessages((prev) => prev.filter((msg) => !msg.typing));
-        setMessages((prev) => [...prev, { sender: "bot", text: data.response }]);
+        setMessages((prev) => [
+          ...prev,
+          { sender: "bot", text: data.response },
+        ]);
       }, 1000);
     } catch (error) {
-      setMessages((prev) => [...prev, { sender: "bot", text: "Error connecting to chatbot." }]);
+      setMessages((prev) => [
+        ...prev,
+        { sender: "bot", text: "Error connecting to chatbot." },
+      ]);
     }
   };
 
   return (
-    <div className={`dashboard-container ${darkMode ? "dark-mode" : ""}`}>
+    <div className="dashboard-container">
       {/* Header */}
       <header className="chat-header">
         <h2>GenZAI</h2>
         <div className="chat-actions">
-          <button onClick={() => setDarkMode(!darkMode)}>
-            {darkMode ? <FiSun /> : <FiMoon />}
-          </button>
           <button onClick={() => window.history.back()}>
             <FiX />
           </button>
@@ -80,9 +84,11 @@ const StudentDashboard = () => {
           placeholder="Type a message..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+          onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
         />
-        <button onClick={handleSendMessage}><FiSend /></button>
+        <button onClick={handleSendMessage}>
+          <FiSend />
+        </button>
       </div>
     </div>
   );
