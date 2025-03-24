@@ -27,14 +27,14 @@ def extract_entity_name(query, entity_type):
     # Try Spacy NER first
     for ent in doc.ents:
         if ent.label_ in ["PERSON", "ORG"]:
-            return ent.text.strip()  
+            return ent.text.strip()
 
-    # If Spacy fails, use regex-based extraction
+    # Regex-based extraction if NER fails
     if entity_type == "Student":
         match = re.search(r"student\s*(\d+)", query, re.IGNORECASE)
         if match:
             return f"Student {match.group(1)}"
-    
+
     if entity_type == "Mentor":
         match = re.search(r"mentor\s*(\d+)", query, re.IGNORECASE)
         if match:
@@ -51,6 +51,22 @@ def extract_entity_name(query, entity_type):
 
     return None
 
+def get_semester_gpa(student_data, sem_number):
+    """Fetch GPA for a specific semester."""
+    sem_key = f"{sem_number} Semester"
+    if sem_key in student_data:
+        return f"{sem_key} GPA: {student_data[sem_key]}"
+    else:
+        return f"🚨 No GPA data found for {sem_key}."
+
+def get_all_gpa(student_data):
+    """Fetch all semester GPAs."""
+    sem_gpa_data = {k: v for k, v in student_data.items() if "Semester" in k}
+    if sem_gpa_data:
+        gpa_details = "\n".join([f"{k} GPA: {v}" for k, v in sem_gpa_data.items()])
+        return gpa_details
+    return "🚨 No GPA information found."
+
 def process_query(query):
     """Process user query and fetch details from MongoDB."""
     query = query.lower()
@@ -66,7 +82,29 @@ def process_query(query):
     # **Student Queries**
     if "student" in query and student_name:
         student_data = find_entity_by_name(student_name, students_col, "Student Name")
-        return format_response("Student", student_data)
+        if not student_data:
+            return f"🚨 No data found for {student_name}."
+
+        # **Handle Specific Semester GPA Query**
+        sem_match = re.search(r"sem\s*(\d+)", query, re.IGNORECASE)
+        if "gpa" in query and sem_match:
+            sem_number = sem_match.group(1)
+            return get_semester_gpa(student_data, sem_number)
+
+        # **Handle Query for All Semester GPAs**
+        elif "gpa" in query:
+            return get_all_gpa(student_data)
+
+        # **Handle Attendance Query**
+        elif "attendance" in query:
+            if "Attendance" in student_data:
+                return f"📊 Attendance: {student_data['Attendance']}"
+            else:
+                return "🚨 No attendance data available."
+
+        # **Return Full Student Details if No Specific Query**
+        else:
+            return format_response("Student", student_data)
 
     # **Mentor Queries**
     if "mentor" in query and mentor_name:
