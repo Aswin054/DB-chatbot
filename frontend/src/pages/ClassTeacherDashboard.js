@@ -1,79 +1,97 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { FiSend, FiX } from "react-icons/fi";
+import { motion } from "framer-motion";
 import "./ClassTeacherDashboard.css";
-import { FiBarChart2, FiUserCheck, FiClipboard, FiAlertCircle, FiMessageSquare, FiX } from "react-icons/fi";
 
 const ClassTeacherDashboard = () => {
-  const [chatOpen, setChatOpen] = useState(false);
+  const [messages, setMessages] = useState([{ sender: "bot", text: "Hi" }]);
+  const [input, setInput] = useState("");
+  const chatRef = useRef(null);
+
+  // Automatically scroll to the bottom when messages change
+  useEffect(() => {
+    if (chatRef.current) {
+      chatRef.current.scrollTop = chatRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+  const handleSendMessage = async () => {
+    if (!input.trim()) return;
+
+    const userMessage = { sender: "user", text: input };
+    setMessages([...messages, userMessage]);
+    setInput("");
+
+    setMessages((prev) => [
+      ...prev,
+      { sender: "bot", text: "Typing...", typing: true },
+    ]);
+
+    try {
+      const response = await fetch("http://127.0.0.1:5000/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: input }),
+      });
+      const data = await response.json();
+
+      setTimeout(() => {
+        setMessages((prev) => prev.filter((msg) => !msg.typing));
+        setMessages((prev) => [
+          ...prev,
+          { sender: "bot", text: data.response },
+        ]);
+      }, 1000);
+    } catch (error) {
+      setMessages((prev) => [
+        ...prev,
+        { sender: "bot", text: "Error connecting to chatbot." },
+      ]);
+    }
+  };
 
   return (
-    <div className="class-teacher-dashboard">
-      {/* Sidebar */}
-      <aside className="sidebar">
-        <h2>🎯 Class Teacher Dashboard</h2>
-        <ul>
-          <li><FiBarChart2 /> Class Marks Overview</li>
-          <li><FiUserCheck /> Student List & Attendance</li>
-          <li><FiClipboard /> Exam & Assignment Status</li>
-          <li><FiAlertCircle /> Low-Performing Students</li>
-        </ul>
-      </aside>
-
-      {/* Main Content */}
-      <main className="main-content">
-        {/* Header */}
-        <header className="header">
-          <h1>📚 Class Teacher Portal</h1>
-          <div className="teacher-info">
-            <span>👤 Mr. John Doe | CSE - III Year A Section</span>
-            <img src="teacher-profile.jpg" alt="Teacher" className="profile-pic" />
-          </div>
-        </header>
-
-        {/* Dashboard Sections */}
-        <section className="dashboard-widgets">
-          <div className="widget">
-            <h3>📉 Class Performance Graph</h3>
-            <div className="chart-placeholder">[Bar Chart Placeholder]</div>
-          </div>
-          <div className="widget">
-            <h3>📌 Attendance Tracker</h3>
-            <div className="chart-placeholder">[Pie Chart Placeholder]</div>
-          </div>
-          <div className="widget notes">
-            <h3>📝 Quick Notes for Each Student</h3>
-            <textarea placeholder="Add your notes here..." />
-          </div>
-        </section>
-      </main>
-
-      {/* Chatbot Floating Button */}
-      <button className="chatbot-btn" onClick={() => setChatOpen(true)}>
-        <FiMessageSquare size={24} />
-      </button>
-
-      {/* Chatbot Sidebar */}
-      {chatOpen && (
-        <div className="chatbot-sidebar">
-          <div className="chatbot-header">
-            <h3>AI Chat Assistant</h3>
-            <button className="close-btn" onClick={() => setChatOpen(false)}>
-              <FiX size={20} />
-            </button>
-          </div>
-          <div className="chatbot-messages">
-            <p className="bot-message">Hello! How can I assist you today?</p>
-          </div>
-          <div className="chatbot-input">
-            <input type="text" placeholder="Type your message..." />
-            <button className="send-btn">➤</button>
-          </div>
+    <div className="dashboard-container">
+      {/* Header */}
+      <header className="chat-header">
+        <h2>GenZAI</h2>
+        <div className="chat-actions">
+          <button onClick={() => window.history.back()}>
+            <FiX />
+          </button>
         </div>
-      )}
+      </header>
+
+      {/* Chat Messages */}
+      <div className="chat-messages" ref={chatRef}>
+        {messages.map((msg, index) => (
+          <motion.div
+            key={index}
+            className={`chat-bubble ${msg.sender}`}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            {msg.text}
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Chat Input */}
+      <div className="chat-input">
+        <input
+          type="text"
+          placeholder="Type a message..."
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
+        />
+        <button onClick={handleSendMessage}>
+          <FiSend />
+        </button>
+      </div>
     </div>
   );
 };
 
 export default ClassTeacherDashboard;
-
-
-

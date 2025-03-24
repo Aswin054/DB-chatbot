@@ -1,4 +1,6 @@
-import AppRoutes from "./routes";
+// 📁 src/App.js
+import React from "react";
+import AppRoutes from "./routes/AppRoutes"; // Correct path
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
@@ -10,4 +12,3 @@ function App() {
 }
 
 export default App;
-

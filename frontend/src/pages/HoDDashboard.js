@@ -1,137 +1,110 @@
-import React, { useState } from "react";
-import { LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, CartesianGrid } from "recharts";
-import { FaChartBar, FaUsers, FaGraduationCap, FaUserTie, FaDownload, FaSearch, FaRobot, FaTimes, FaPaperPlane } from "react-icons/fa";
+import React, { useState, useEffect, useRef } from "react";
+import { FiSend, FiX, FiPlus } from "react-icons/fi"; // ✅ Import FiPlus icon
+import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom"; // ✅ Import useNavigate for redirection
 import "./HoDDashboard.css";
 
-const studentPerformanceData = [
-  { class: "CSE A", passPercentage: 85 },
-  { class: "CSE B", passPercentage: 78 },
-  { class: "CSE C", passPercentage: 82 },
-];
-
-const topStudents = [
-  { name: "Arun Kumar", cgpa: 9.8 },
-  { name: "Priya Sharma", cgpa: 9.7 },
-  { name: "Vignesh R", cgpa: 9.5 },
-];
-
 const HoDDashboard = () => {
-  const [chatOpen, setChatOpen] = useState(false);
-  const [messages, setMessages] = useState([
-    { sender: "bot", text: "Hello! How can I assist you today?" }
-  ]);
-  const [inputText, setInputText] = useState("");
+  const [messages, setMessages] = useState([{ sender: "bot", text: "Hi" }]);
+  const [input, setInput] = useState("");
+  const chatRef = useRef(null);
+  const navigate = useNavigate(); // ✅ For navigation to StudentForm
 
-  const toggleChat = () => {
-    setChatOpen(!chatOpen);
+  // ✅ Automatically scroll to the bottom when messages change
+  useEffect(() => {
+    if (chatRef.current) {
+      chatRef.current.scrollTop = chatRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+  // ✅ Handle Sending Messages
+  const handleSendMessage = async () => {
+    if (!input.trim()) return;
+
+    const userMessage = { sender: "user", text: input };
+    setMessages([...messages, userMessage]);
+    setInput("");
+
+    // ✅ Show "Typing..." for bot while waiting for response
+    setMessages((prev) => [
+      ...prev,
+      { sender: "bot", text: "Typing...", typing: true },
+    ]);
+
+    try {
+      const response = await fetch("http://127.0.0.1:5000/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: input }),
+      });
+      const data = await response.json();
+
+      // ✅ Simulate typing delay
+      setTimeout(() => {
+        setMessages((prev) => prev.filter((msg) => !msg.typing));
+        setMessages((prev) => [
+          ...prev,
+          { sender: "bot", text: data.response },
+        ]);
+      }, 1000);
+    } catch (error) {
+      setMessages((prev) => [
+        ...prev,
+        { sender: "bot", text: "Error connecting to chatbot." },
+      ]);
+    }
   };
 
-  const handleSendMessage = () => {
-    if (inputText.trim() === "") return;
-    setMessages([...messages, { sender: "user", text: inputText }]);
-    setInputText("");
-    setTimeout(() => {
-      setMessages(prevMessages => [...prevMessages, { sender: "bot", text: "I'm still learning. Let me get back to you!" }]);
-    }, 1000);
+  // ✅ Navigate to StudentForm Page
+  const goToAddStudent = () => {
+    navigate("/add-student"); // ✅ Redirect to StudentForm
   };
 
   return (
-    <div className="hod-dashboard">
-      <header className="dashboard-header">
-        <h1>Panimalar Engineering College</h1>
-        <div className="user-profile">
-          <span>Welcome, HOD!</span>
-          <img src="profile-pic.png" alt="HOD Profile" className="profile-pic" />
+    <div className="dashboard-container">
+      {/* ✅ Header */}
+      <header className="chat-header">
+        <div className="chat-actions-left">
+          {/* ✅ Add Button to Navigate to StudentForm */}
+          <button onClick={goToAddStudent} className="add-student-btn">
+            <FiPlus /> Add Student
+          </button>
+        </div>
+        <h2>GenZAI</h2>
+        <div className="chat-actions">
+          <button onClick={() => window.history.back()}>
+            <FiX />
+          </button>
         </div>
       </header>
 
-      <div className="dashboard-container">
-        <nav className="sidebar">
-          <ul>
-            <li><FaChartBar /> Department Analytics</li>
-            <li><FaUsers /> Student Database</li>
-            <li><FaGraduationCap /> Class Performance</li>
-            <li><FaUserTie /> Top Students</li>
-            <li><FaUserTie /> Manage Faculty</li>
-          </ul>
-        </nav>
-
-        <main className="dashboard-content">
-          <div className="chart-section">
-            <h2>Performance Trend</h2>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={studentPerformanceData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="class" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Line type="monotone" dataKey="passPercentage" stroke="#FFD700" strokeWidth={3} />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-
-          <div className="heatmap-section">
-            <h2>Class-Wise Pass Percentage</h2>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={studentPerformanceData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="class" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="passPercentage" fill="#FFD700" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-
-          <div className="top-students">
-            <h2>🏆 Top-Performing Students</h2>
-            <ul>
-              {topStudents.map((student, index) => (
-                <li key={index}>{student.name} - CGPA: {student.cgpa}</li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="actions">
-            <button className="download-btn"><FaDownload /> Download Reports</button>
-            <div className="search-box">
-              <input type="text" placeholder="Search Student..." />
-              <button><FaSearch /></button>
-            </div>
-          </div>
-        </main>
+      {/* ✅ Chat Messages */}
+      <div className="chat-messages" ref={chatRef}>
+        {messages.map((msg, index) => (
+          <motion.div
+            key={index}
+            className={`chat-bubble ${msg.sender}`}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            {msg.text}
+          </motion.div>
+        ))}
       </div>
 
-      {/* Chatbot Floating Button */}
-      <button className="chatbot-button" onClick={toggleChat}>
-        <FaRobot />
-      </button>
-
-      {/* Chat Sidebar */}
-      <div className={`chat-sidebar ${chatOpen ? "open" : ""}`}>
-        <div className="chat-header">
-          <h3>AI Chat Assistant</h3>
-          <button className="close-btn" onClick={toggleChat}><FaTimes /></button>
-        </div>
-        <div className="chat-messages">
-          {messages.map((msg, index) => (
-            <div key={index} className={`chat-bubble ${msg.sender}`}>
-              {msg.text}
-            </div>
-          ))}
-        </div>
-        <div className="chat-input">
-          <input 
-            type="text" 
-            placeholder="Type a message..." 
-            value={inputText} 
-            onChange={(e) => setInputText(e.target.value)} 
-            onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
-          />
-          <button onClick={handleSendMessage}><FaPaperPlane /></button>
-        </div>
+      {/* ✅ Chat Input */}
+      <div className="chat-input">
+        <input
+          type="text"
+          placeholder="Type a message..."
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
+        />
+        <button onClick={handleSendMessage}>
+          <FiSend />
+        </button>
       </div>
     </div>
   );
